@@ -1,0 +1,36 @@
+INFO 2021.03.19. 21:54:52 [main.py:23] Start to run mainLoop.
+INFO 2021.03.19. 21:54:52 [rootDir.py:67] Find a new application /sys/fs/cgroup/cpu/docker/ede1831d26927b7aee224af215f2df702bf3e10c192f6534c44602ca1e07b407
+INFO 2021.03.19. 21:55:09 [main.py:23] Start to run mainLoop.
+INFO 2021.03.19. 21:55:09 [rootDir.py:67] Find a new application /sys/fs/cgroup/cpu/docker/ede1831d26927b7aee224af215f2df702bf3e10c192f6534c44602ca1e07b407
+INFO 2021.03.19. 21:55:09 [main.py:30] Docker updates add 1 dockers.
+INFO 2021.03.19. 21:55:09 [main.py:33] Docker updates sub 0 dockers.
+INFO 2021.03.19. 21:55:19 [main.py:30] Docker updates add 0 dockers.
+INFO 2021.03.19. 21:55:19 [main.py:33] Docker updates sub 0 dockers.
+INFO 2021.03.19. 21:55:29 [main.py:30] Docker updates add 0 dockers.
+INFO 2021.03.19. 21:55:29 [main.py:33] Docker updates sub 0 dockers.
+INFO 2021.03.19. 21:55:39 [main.py:30] Docker updates add 0 dockers.
+INFO 2021.03.19. 21:55:39 [main.py:33] Docker updates sub 0 dockers.
+INFO 2021.03.19. 21:55:49 [main.py:30] Docker updates add 0 dockers.
+INFO 2021.03.19. 21:55:49 [main.py:33] Docker updates sub 0 dockers.
+INFO 2021.03.19. 21:55:59 [main.py:30] Docker updates add 0 dockers.
+INFO 2021.03.19. 21:55:59 [main.py:33] Docker updates sub 0 dockers.
+INFO 2021.03.19. 21:56:09 [main.py:30] Docker updates add 0 dockers.
+INFO 2021.03.19. 21:56:09 [main.py:33] Docker updates sub 0 dockers.
+INFO 2021.03.19. 21:56:19 [main.py:30] Docker updates add 0 dockers.
+INFO 2021.03.19. 21:56:19 [main.py:33] Docker updates sub 0 dockers.
+INFO 2021.03.19. 21:56:29 [main.py:30] Docker updates add 0 dockers.
+INFO 2021.03.19. 21:56:29 [main.py:33] Docker updates sub 0 dockers.
+INFO 2021.03.19. 21:56:39 [main.py:30] Docker updates add 0 dockers.
+INFO 2021.03.19. 21:56:39 [main.py:33] Docker updates sub 0 dockers.
+INFO 2021.03.19. 21:56:49 [main.py:30] Docker updates add 0 dockers.
+INFO 2021.03.19. 21:56:49 [main.py:33] Docker updates sub 0 dockers.
+INFO 2021.03.19. 21:56:59 [main.py:30] Docker updates add 0 dockers.
+INFO 2021.03.19. 21:56:59 [main.py:33] Docker updates sub 0 dockers.
+INFO 2021.03.19. 21:57:09 [main.py:30] Docker updates add 0 dockers.
+INFO 2021.03.19. 21:57:09 [main.py:33] Docker updates sub 0 dockers.
+INFO 2021.03.19. 21:57:19 [main.py:30] Docker updates add 0 dockers.
+INFO 2021.03.19. 21:57:19 [main.py:33] Docker updates sub 0 dockers.
+INFO 2021.03.19. 21:57:29 [main.py:30] Docker updates add 0 dockers.
+INFO 2021.03.19. 21:57:29 [main.py:33] Docker updates sub 0 dockers.
+INFO 2021.03.19. 21:57:39 [main.py:30] Docker updates add 0 dockers.
+INFO 2021.03.19. 21:57:39 [main.py:33] Docker updates sub 0 dockers.

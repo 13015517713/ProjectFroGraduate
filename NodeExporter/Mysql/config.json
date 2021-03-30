@@ -1,0 +1,7 @@
+{
+    "url":"",
+    "port":3306,
+    "database":"nodeMetric",
+    "username":"root",
+    "password":"wcx19980709"    
+}

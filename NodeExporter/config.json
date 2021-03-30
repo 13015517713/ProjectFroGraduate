@@ -1,0 +1,5 @@
+{
+    "rootDir":"/sys/fs/cgroup/cpu/docker/",
+    "timeSleep":"10",
+    "QosMasterUrl":"http://localhost:8000/"
+}
