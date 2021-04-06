@@ -1,4 +1,6 @@
 {
     "QosMasterIP":"0.0.0.0",
-    "QosMasterPort":8000
+    "QosMasterPort":8000,
+    "RedisServer":"localhost",
+    "RedisPort":6380
 }

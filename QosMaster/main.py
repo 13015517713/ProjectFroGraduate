@@ -1,9 +1,11 @@
 import sys
 # print(sys.path)
-from Util import log,config
+from Util import log,config,myRedis as redis
 from flask import Flask,request
 import dataStore as ds
 import json
+import training as train
+import threading
 
 logger = log.getDefLogger()
 app = Flask("QosMaster")
@@ -43,12 +45,20 @@ def getMetric():
         if ds.checkAllMetric(allMetric):
             pass
     except Exception as e:
-        print(e)
+        logger.warning(e)
         logger.warning("TranMetric gets one errordata.")
         return 'oneMetricRejected'
+    # 写到docker&文件中
     for metric in allMetric:
         ds.pushMetric(fromAds, metric['dockerName'], metric['dockerId'], metric['dockerMetric'])
+    # 写到redis中
+    ds.pushToRedis(fromAds, allMetric)
     return 'tranMetric'
 
 if __name__ == '__main__':
+    trainThread = threading.Thread(train.run)
+    logger.info("Start trainThread.")
+    trainThread.run()
     app.run(host=config.getConfig('QosMasterIP'), port=config.getConfig('QosMasterPort'))
+    trainThread.join()
+    logger.info("System finished.")

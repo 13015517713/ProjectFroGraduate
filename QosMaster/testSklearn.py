@@ -42,7 +42,7 @@ for ix, svr in enumerate(svrs):
     axes[ix].legend(loc='upper center', bbox_to_anchor=(0.5, 1.1),
                     ncol=1, fancybox=True, shadow=True)
 
-fig.text(0.5, 0.04, 'data', ha='center', va='cgit lfs trackenter')
+fig.text(0.5, 0.04, 'data', ha='center', va='center')
 fig.text(0.06, 0.5, 'target', ha='center', va='center', rotation='vertical')
 fig.suptitle("Support Vector Regression", fontsize=14)
 plt.show()

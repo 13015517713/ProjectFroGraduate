@@ -6,7 +6,9 @@ import numpy as np
 import csv
 import sys
 import os
-from Util import log
+import json
+import training as train
+from Util import log,myRedis
 
 logger = log.getDefLogger()
 allMechs = {} # ads对应mecg列表
@@ -109,9 +111,6 @@ def pushMetric(fromAds, dockername, dockerid, metric):
         Mech.addDocker(docker)
     # 写入文件 data/ip/dockername：首行为指标名称，下面是指标
     pushToFile(fromAds, dockername, data)
-    # 写入完毕后 写入redis，训练线程会去读然后加入训练
-    '''
-    '''
 
 # 以csv的方式写进去，每次写之前都清空
 def pushToFile(fromAds, dockername, data):
@@ -143,5 +142,42 @@ def checkAllMetric(allMetric):
             raise ValueError("MaxMetric is zero.Please check docker is running.")
     return
 
+# 把Metric包装下，写到redis中(需要序列化)
+# redis报文格式： fromAds=fromAds,data=[[dockername,[X],[Y]],]
+def pushToRedis(fromAds, allMetric):
+    tranData = {}
+    tranData['fromAds'] = fromAds
+    dockerName = []
+    mainMetricList = []
+    subMetricList = []
+    ipcList = []
+    for metric in allMetric:
+        dockername = metric['dockerName']
+        dockerMetric = metric['dockerMetric']
+        mainMetric = []
+        subMetric = []
+        ipc = float(dockerMetric["instructions"]) / float(dockerMetric["cycles"])
+        ipcList.append(ipc)
+        for i in kMainExTar:
+            if i in metric:
+                mainMetric.append(float(metric[i]) )
+        for i in kSubTar:
+            for i in metric:
+                subMetric.append(float(metric[i]) )
+        mainMetricList.append(mainMetric)
+        subMetricList.append(subMetric)
+    data = []
+    for i in range(len(dockerName) ):
+        dockername = dockerName[i]
+        X = mainMetricList[i] + subMetricList[0:i] + subMetricList[i+1:]
+        Y = ipcList[i]
+        data.append({'dockername':dockername, 'X':X, 'Y':Y})
+    tranData['data'] = data
+    redis.pushToRedis(json.dumps(tranData))
+
+    # 封装开始加入
+    
+
 if __name__ == '__main__':
+        
     pushToFile("10.118.0.224", "test", [2222,23])
