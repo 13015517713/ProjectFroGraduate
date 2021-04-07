@@ -46,13 +46,15 @@ toEvent = {
 class PerfTool:
     def __init__(self):
         pass
-    def getMetricByPids(self, pidlist, sleepTime=5): # 直接返回带指标结构的字典结构即可
-        cmd = 'sudo perf stat -x "|" -e '
+    # 根据Pid出现问题 // Problems finding threads of monitor
+    # 现在修改成为-G，形式为-G docker/dockerid
+    def getMetricByGroup(self, group, sleepTime=5): # 直接返回带指标结构的字典结构即可
+        cmd = 'sudo perf stat  -a -x "|" -e '
         allMetric = ",".join(allTar )
         cmd += allMetric
-        pids = ",".join([str(pid) for pid in pidlist] )
-        cmd += " -p " + pids
+        cmd += " -G " + group
         cmd += " sleep %f"%(float(sleepTime) )
+        logger.debug("Start tp run %s"%(cmd))
         res = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if res.returncode != 0:
             return None
@@ -72,43 +74,16 @@ class PerfTool:
             if infoline[1] == '':
                 del infoline[1]
             val = infoline[0]
-            if val.find('not counted') != -1:
-                logger.fatal("Metric %s can't be count so set 0."%(metric) )
-                val = 0
             if infoline[1] == 'instructions':
                 metricInfo["ipc"] = float(infoline[4]) if val.find('not counted') == -1 else 0
-            metricInfo[metric] = float(val)  
-        return metricInfo
-
-    def getMetricByGroup(self, group, sleepTime=5): # 直接返回指标组
-        cmd = "sudo perf stat -e "
-        allMetric = ",".join(allTar)
-        cmd += allMetric
-        cmd += " -G " + group
-        cmd += " sleep %f"%(float(sleepTime) )
-        res = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        if res.returncode != 0:
-            return None
-        metricInfo = {}
-        tinfo = str(res.stdout, encoding='utf-8').strip().split('\n')
-        for i in range(len(allTar) ):
-            metric = allTar[i]
-            infoline = tinfo[i].strip().split('|')
-            # 可能会出现||连在一起的状况
-            if infoline[1] == '':
-                del infoline[1]
-            val = infoline[0]
             if val.find('not counted') != -1:
                 logger.fatal("Metric %s can't be count so set 0."%(metric) )
                 val = 0
-            if infoline[1] == 'instructions':
-                metricInfo["ipc"] = float(infoline[4]) if val.find('not counted') != -1 else 0
             metricInfo[metric] = float(val)  
         return metricInfo
-
 
 if __name__ == "__main__":
     Pf = PerfTool()
     pids = [4773,4858,28277]
     # t = [str(i) for i in pids]
-    Pf.getMetricByPids(pids)
+    Pf.getMetricByGroup('docker/aed4f49e2cf9f013d3e793455b5909106da365839eecf02b41915d53d6eda26a')

@@ -20,6 +20,8 @@ def sayHello():
 def register():
     fromAds = request.remote_addr
     dockername = request.args.get('dockername')
+    if dockername not in ds.kNeedAppName:
+        return 'can"t register'
     dockerid = request.args.get('dockerid')
     logger.info("Get register info dockername=%s from %s"%(dockername, fromAds) )
     ds.addDocker(str(fromAds), dockerid, dockername)
@@ -29,6 +31,8 @@ def register():
 def logout():
     fromAds = request.remote_addr
     dockername = request.args.get('dockername')
+    if dockername not in ds.kNeedAppName:
+        return 'can"t logout'
     dockerid = request.args.get('dockerid')
     logger.info("Get logout info dockername=%s from %s"%(dockername, fromAds) )
     ds.logoutDocker(str(fromAds), dockerid, dockername)
@@ -50,15 +54,17 @@ def getMetric():
         return 'oneMetricRejected'
     # 写到docker&文件中
     for metric in allMetric:
+        if metric['dockerName'] not in ds.kNeedAppName:
+            continue
         ds.pushMetric(fromAds, metric['dockerName'], metric['dockerId'], metric['dockerMetric'])
     # 写到redis中
     ds.pushToRedis(fromAds, allMetric)
     return 'tranMetric'
 
 if __name__ == '__main__':
-    trainThread = threading.Thread(train.run)
+    # trainThread = threading.Thread(train.run)
     logger.info("Start trainThread.")
-    trainThread.run()
+    # trainThread.run()
     app.run(host=config.getConfig('QosMasterIP'), port=config.getConfig('QosMasterPort'))
-    trainThread.join()
+    # trainThread.join()
     logger.info("System finished.")

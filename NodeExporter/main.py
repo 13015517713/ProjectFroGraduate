@@ -30,6 +30,9 @@ def mainloop():
         added = CgroupRootDir.popAlladded()
         logger.info("Docker updates add %d dockers."%(len(added)) )
         for docker in added:
+            if rootDir.isNeed(docker.getName()) == False:
+                logger.debug("Docker name=%s can't register."%(docker.getName()) )
+                continue
             tranInfo = {'dockername':docker.getName(), 'dockerid':docker.getId()}
             ht.sendHttpByGet(Url+'register', data=tranInfo)
         
@@ -37,6 +40,9 @@ def mainloop():
         subed = CgroupRootDir.popAllsubed()
         logger.info("Docker updates sub %d dockers."%(len(subed)) )
         for docker in subed:
+            if rootDir.isNeed(docker.getName()) == False:
+                logger.debug("Docker name=%s can't loggout."%(docker.getName()) )
+                continue
             tranInfo = {'dockername':docker.getName(), 'dockerid':docker.getId()}
             ht.sendHttpByGet(Url+'logout', data=tranInfo)
         
@@ -45,7 +51,9 @@ def mainloop():
         dockers = CgroupRootDir.getAllDocker()
         tranInfo = []
         for docker in dockers:
-            perfInfo = Pf.getMetricByPids(docker.getPids()) 
+            if rootDir.isNeed(docker.getName()) == False:
+                continue
+            perfInfo = Pf.getMetricByGroup(docker.getGroup()) 
             tInfo = {"dockerName":docker.getName(),
                         "dockerId":docker.getId(),
                         "dockerMetric":perfInfo}

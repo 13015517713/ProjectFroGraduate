@@ -16,6 +16,7 @@ kStoreRootPath = "/home/wcx/gitProject/projectFroGraduate/QosMaster/data/"
 # 每个应用的指标都拿到
 kMainExTar = ["lock_loads","fp_uops","branch","l1_misses","l2_misses","stall_sb","branch_misp","machine_clear"]
 kSubTar = ["instructions","cycles","loads_and_stores","cache-misses"]
+kNeedAppName = ["bzip","redis","mcf","spec"] # 过滤其他docker
 
 class Docker:
     def __init__(self, dockerid, dockername):

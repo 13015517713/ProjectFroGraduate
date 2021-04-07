@@ -10,7 +10,7 @@ class Trainer:
         self._regrList = []
         
     def allFit(self, xList, yList): # 传入所有模型的X和Y
-        
+        pass
 
 # 存储所有训练器
 TrainerList = {}

@@ -6,6 +6,12 @@ import csv
 import subprocess
 
 logger = log.getDefLogger()
+kNeedAppName = ["bzip","redis","mcf","spec"] # 过滤其他docker
+
+def isNeed(dockername):
+    if dockername in kNeedAppName:
+        return True
+    return False
 
 # 从该目录下的task拿到PID列表
 def getPIDFromDir(rootPath):
@@ -44,7 +50,7 @@ class Docker:
     def getGroup(self):
         return "docker" + "/" + self._id
     def getName(self):
-        return self._meta["Name"]
+        return self._meta["Name"].replace("/",'')
     def getId(self):
         return self._id
 
