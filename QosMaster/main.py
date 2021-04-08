@@ -57,14 +57,18 @@ def getMetric():
         if metric['dockerName'] not in ds.kNeedAppName:
             continue
         ds.pushMetric(fromAds, metric['dockerName'], metric['dockerId'], metric['dockerMetric'])
-    # 写到redis中
-    ds.pushToRedis(fromAds, allMetric)
+   
+    # 整理数据，返回[fromAds,name,[X],[Y]]的列表，并存储文件
+    trainData = ds.dealData(fromAds, allMetric)
+    # 将列表写入redis
+    ds.pushToRedis(fromAds, trainData) # 写到redis中
     return 'tranMetric'
 
 if __name__ == '__main__':
-    # trainThread = threading.Thread(train.run)
+    # train.clearList('MetricList') # 清空训练数据
+    trainThread = threading.Thread(target=train.run)
     logger.info("Start trainThread.")
-    # trainThread.run()
+    trainThread.start()
     app.run(host=config.getConfig('QosMasterIP'), port=config.getConfig('QosMasterPort'))
-    # trainThread.join()
+    trainThread.join()
     logger.info("System finished.")
