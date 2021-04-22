@@ -7,9 +7,18 @@ import subprocess
 
 logger = log.getDefLogger()
 kNeedAppName = ["bzip","redis","mcf","spec"] # 过滤其他docker
+kMainAppName = ["redis"]
+
+def getMainApp():
+    return kMainAppName
 
 def isNeed(dockername):
     if dockername in kNeedAppName:
+        return True
+    return False
+
+def isMain(dockername):
+    if dockername in kMainAppName:
         return True
     return False
 
@@ -25,6 +34,16 @@ def getPIDFromDir(rootPath):
     taskfile.close()
     return taskPids
 
+# 拿到Proc目录进程ID列表
+def getPIDFromDirProc(rootPat)
+    filename = os.path.join(rootPath, "cgroup.procs")
+    taskfile = open(filename, "r")
+    taskPids = []
+    reader = csv.reader(taskfile)
+    for pid in reader:
+        taskPids.append(pid[0])
+    taskfile.close()
+    return taskPids
 
 # docker inspect得到信息
 def getDockerDataFromID(dockerid):
@@ -42,10 +61,15 @@ class Docker:
     def __init__(self, rootPath, dockerid):
         self._rootPath = rootPath
         self._pids = getPIDFromDir(rootPath) # 得到Pid列表
+        self._pidsExceptLwp = getPIDFromDirProc(rootPath)
         self._id = dockerid
         self._meta = getDockerDataFromID(dockerid)
-    
+    def getPidExceptLwp(self):
+        self._pidsExceptLwp = getPIDFromDirProc(self._rootPath)
+        return self._pidsExceptLwp
     def getPids(self):
+        # 可能Pid发生变化，选哟更新
+        self._pids = getPIDFromDir(self._rootPath)
         return self._pids
     def getGroup(self):
         return "docker" + "/" + self._id
@@ -112,6 +136,7 @@ class RootDir:
         self._savedDockerID = nowDockerID
         self._dockerAll = nowDocker
         return updatelen
+
 
 if __name__ == '__main__':
     dockerid = "ede1831d26927b7aee224af215f2df702bf3e10c192f6534c44602ca1e07b407"

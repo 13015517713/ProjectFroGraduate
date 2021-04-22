@@ -1,13 +1,13 @@
 # Todo:
 # 1.用flask框架实现注册，接收Kubernetes的注册信息，然后注册成功
 # 2.
-from Util import log,config,httpbin as ht
+from Util import log,config,httpbin as ht,Top as tp
 import rootDir
 import json
 import time
 from flask import Flask,request
-from Collector import Perf
-from Collector import Pqos
+from Collector import Perf,Pqos
+from Trainer import trainer
 
 # log
 logger = log.getDefLogger()
@@ -21,6 +21,7 @@ def mainloop():
     Url = config.getConfig("QosMasterUrl")
     Pf = Perf.PerfTool()
     Pq = Pqos.PqosTool()
+    trainer.setMainAppName(rootDir.getMainApp())
     logger.info("Start to run mainLoop.")
     timeSleep = float(config.getConfig("timeSleep"))
     # res = CgroupRootDir.load()  # 更新rootdir目录，添加的就注册
@@ -34,7 +35,7 @@ def mainloop():
                 logger.debug("Docker name=%s can't register."%(docker.getName()) )
                 continue
             tranInfo = {'dockername':docker.getName(), 'dockerid':docker.getId()}
-            ht.sendHttpByGet(Url+'register', data=tranInfo)
+            # ht.sendHttpByGet(Url+'register', data=tranInfo)
         
         # 1.2 发删除请求
         subed = CgroupRootDir.popAllsubed()
@@ -44,7 +45,7 @@ def mainloop():
                 logger.debug("Docker name=%s can't loggout."%(docker.getName()) )
                 continue
             tranInfo = {'dockername':docker.getName(), 'dockerid':docker.getId()}
-            ht.sendHttpByGet(Url+'logout', data=tranInfo)
+            # ht.sendHttpByGet(Url+'logout', data=tranInfo)
         
         # 2.1 Perf采集指标
         # 传Pid然后得到此刻的数据，和docker对应起来，然后发过去。
@@ -59,13 +60,24 @@ def mainloop():
                         "dockerMetric":perfInfo}
             tranInfo.append(tInfo)
         # 发送指标，这里是统一发的，不过目前指标不是统一截取的
-        ht.sendHttpByPost(Url + 'tranMetric', "data", json.dumps(tranInfo))
+        # ht.sendHttpByPost(Url + 'tranMetric', "data", json.dumps(tranInfo))
 
         # 2.2 Pqos采集指标，目前先不需要
         for docker in dockers:
             # Pq.getMetricByPids(docker.getPids())
             pass
-    
+
+        # 3.得到每个Group的CPU使用率内存使用率，然后聚类，然后
+        for docker in dockers:
+            # if not rootDir.isMain(docker.getName()):
+            #     continue
+            topData = tp.getTopByPids(docker.getPidExceptLwp())
+            trainer.pushTopData(docker.getName(), topData)
+        
+        # 4.根据使用率预测负载
+        
+        # 5.
+
         # time.sleep(timeSleep)
         
 
